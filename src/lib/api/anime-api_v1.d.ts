@@ -36,6 +36,8 @@ export interface components {
       alternate_titles: string[];
       /** Premiere Timestamp */
       premiere_timestamp: number;
+      /** Episode */
+      episode: string;
       /** Main Title */
       main_title: string;
       /** Genres */
