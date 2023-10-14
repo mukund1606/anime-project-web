@@ -8,6 +8,16 @@ const handler = async (req: Request) =>
     req,
     router: appRouter,
     createContext: () => ({ user: null }),
+    responseMeta: () => {
+      return {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Cache-Control": "maxage=30, s-maxage=30, stale-while-revalidate",
+        },
+      };
+    },
   });
 
 export { handler as GET, handler as POST };
