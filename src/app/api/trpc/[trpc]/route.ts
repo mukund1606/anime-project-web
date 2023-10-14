@@ -14,7 +14,7 @@ const handler = async (req: Request) =>
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
-          "Cache-Control": "maxage=30, s-maxage=30, stale-while-revalidate",
+          "Cache-Control": "maxage=10, s-maxage=10, stale-while-revalidate",
         },
       };
     },
