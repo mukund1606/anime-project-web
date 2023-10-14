@@ -6,9 +6,8 @@ import type { Metadata } from "next";
 import { TRPCProvider } from "@/providers/TRPCProvider";
 
 export const metadata: Metadata = {
-  title: "Create Next App",
-  description:
-    "My Template for NextJS with TailwindCSS, TypeScript, TRPC, and more.",
+  title: "My Anime",
+  description: "My Anime is a site to watch anime.",
 };
 
 export default function RootLayout({
