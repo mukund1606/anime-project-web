@@ -14,7 +14,7 @@ export default async function AnimePage({ params }: AnimeProps) {
     <div>
       <div
         key={data.id}
-        className="flex flex-col items-center gap-2 rounded-md px-2 py-4"
+        className="flex flex-col items-center gap-2 rounded-md p-4"
       >
         <Image
           src={data.image ?? ""}
@@ -37,20 +37,36 @@ export default async function AnimePage({ params }: AnimeProps) {
           className="font-medium"
           dangerouslySetInnerHTML={{ __html: data.description! }}
         />
-        <p className="w-full text-sm">Status: {data.status}</p>
-        <p className="w-full text-sm">Released Date: {data.releaseDate}</p>
-        <p className="w-full text-sm">Rating: {data.rating}</p>
-        <p className="w-full text-sm">Type: {data.type}</p>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-          {data.episodes?.map((episode) => (
-            <Link
-              href={`/anime/${data.id}/episode/${episode.id}`}
-              key={episode.id}
-              className="flex flex-col items-center gap-2 rounded-md border px-2 py-4 transition-all duration-700 ease-in-out hover:scale-105 hover:bg-slate-300"
-            >
-              {episode.title}
-            </Link>
-          ))}
+        <p className="w-full text-sm">
+          <span className="font-medium">Status:</span> {data.status}
+        </p>
+        <p className="w-full text-sm">
+          <span className="font-medium">Releaded Date:</span> {data.releaseDate}
+        </p>
+        <p className="w-full text-sm">
+          <span className="font-medium">Rating:</span> {data.rating}
+        </p>
+        <p className="w-full text-sm">
+          <span className="font-medium">Type:</span> {data.type}
+        </p>
+        <p className="w-full text-sm">
+          <span className="font-medium">Genres:</span> {data.genres?.join(", ")}
+        </p>
+        <div className="flex w-full flex-col gap-3">
+          <h3 className="text-lg font-semibold">
+            Episodes({data.episodes?.length ?? 0})
+          </h3>
+          <div className="grid grid-cols-4 gap-3 md:grid-cols-10 lg:grid-cols-12">
+            {data.episodes?.map((episode) => (
+              <Link
+                href={`/anime/${data.id}/episode/${episode.id}`}
+                key={episode.id}
+                className="flex flex-col items-center gap-2 rounded-md border px-2 py-4 transition-all duration-700 ease-in-out hover:scale-105 hover:bg-slate-300"
+              >
+                {episode.title ?? "EP " + episode.number}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>
