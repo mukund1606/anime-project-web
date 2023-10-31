@@ -1,6 +1,8 @@
 import Image from "next/image";
-import { api } from "@/trpc/server";
+// import { api } from "@/trpc/server";
 import Link from "next/link";
+import axios from "axios";
+import type { IAnimeInfo } from "@consumet/extensions";
 
 type AnimeProps = {
   params: {
@@ -9,7 +11,11 @@ type AnimeProps = {
 };
 
 export default async function AnimePage({ params }: AnimeProps) {
-  const data = await api.anilist.getAnime.mutate(params);
+  const data = (
+    await axios.get(
+      `https://api-consumet-fork.vercel.app/meta/anilist/info/${params.id}`,
+    )
+  ).data as IAnimeInfo;
   return (
     <div>
       <div
