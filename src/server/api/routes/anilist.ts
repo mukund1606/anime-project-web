@@ -7,6 +7,8 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import Anilist from "@consumet/extensions/dist/providers/meta/anilist";
 import { TRPCError } from "@trpc/server";
 import { Anime_GET } from "@/server/openapiClient";
+import axios from "axios";
+import type { IAnimeInfo } from "@consumet/extensions";
 // import { StreamingServers } from "@consumet/extensions/dist/models";
 
 export const anilistRouter = createTRPCRouter({
@@ -37,9 +39,13 @@ export const anilistRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       const id = input.id;
-      const anilist = new Anilist();
-      const res = await anilist.fetchAnimeInfo(id);
-      return res;
+      // const anilist = new Anilist();
+      const data = await axios.get(
+        `https://api-consumet-fork.vercel.app/meta/anilist/info/${id}`,
+      );
+      return data.data as IAnimeInfo;
+      // const res = await anilist.fetchAnimeInfo(id);
+      // return res;
     }),
   getEpisode: publicProcedure
     .input(z.object({ epID: z.string() }))
