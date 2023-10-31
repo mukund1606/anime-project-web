@@ -16,14 +16,115 @@ export interface paths {
     /** Live Anime Schedule */
     get: operations["live_anime_schedule_livechart_schedule_get"];
   };
+  "/gogoanime/search": {
+    /** Search */
+    get: operations["search_gogoanime_search_get"];
+  };
+  "/gogoanime/anime/{anime_id}": {
+    /** Getanimeinfo */
+    get: operations["getAnimeInfo_gogoanime_anime__anime_id__get"];
+  };
+  "/gogoanime/watch/{episode_id}": {
+    /** Getanimeepisode */
+    get: operations["getAnimeEpisode_gogoanime_watch__episode_id__get"];
+  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /** AnimeData */
-    AnimeData: {
+    /** GogoAnimeEpisode */
+    GogoAnimeEpisode: {
+      /** Id */
+      id: string;
+      /** Number */
+      number: number;
+      /** Url */
+      url: string;
+    };
+    /** GogoAnimeGogoCdn */
+    GogoAnimeGogoCdn: {
+      headers: components["schemas"]["GogoAnimeGogoCdnHeaders"];
+      /** Sources */
+      sources: components["schemas"]["GogoAnimeGogoCdnUrl"][];
+      /** Download */
+      download: string;
+    };
+    /** GogoAnimeGogoCdnHeaders */
+    GogoAnimeGogoCdnHeaders: {
+      /** Referer */
+      referer: string;
+    };
+    /** GogoAnimeGogoCdnUrl */
+    GogoAnimeGogoCdnUrl: {
+      /** Url */
+      url: string;
+      /** Ism3U8 */
+      isM3U8: boolean;
+      /** Quality */
+      quality: string;
+    };
+    /** GogoAnimeInfo */
+    GogoAnimeInfo: {
+      /** Id */
+      id: string;
+      /** Title */
+      title: string;
+      /** Url */
+      url: string;
+      /** Genres */
+      genres: string[];
+      /** Totalepisodes */
+      totalEpisodes: number;
+      /** Image */
+      image: string;
+      /** Releasedate */
+      releaseDate: string;
+      /** Description */
+      description: string;
+      /** Subordub */
+      subOrDub: string;
+      /** Type */
+      type: string;
+      /** Status */
+      status: string;
+      /** Othername */
+      otherName: string;
+      /** Episodes */
+      episodes: components["schemas"]["GogoAnimeEpisode"][];
+    };
+    /** GogoAnimeSearch */
+    GogoAnimeSearch: {
+      /** Currentpage */
+      currentPage: number;
+      /** Hasnextpage */
+      hasNextPage: boolean;
+      /** Results */
+      results: components["schemas"]["GogoAnimeSearchResult"][];
+    };
+    /** GogoAnimeSearchResult */
+    GogoAnimeSearchResult: {
+      /** Id */
+      id: string;
+      /** Title */
+      title: string;
+      /** Url */
+      url: string;
+      /** Image */
+      image: string;
+      /** Releasedate */
+      releaseDate: string;
+      /** Subordub */
+      subOrDub: string;
+    };
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components["schemas"]["ValidationError"][];
+    };
+    /** LiveChartAnimeData */
+    LiveChartAnimeData: {
       /** Livechart Id */
       livechart_id: string;
       /** Romaji Title */
@@ -52,23 +153,23 @@ export interface components {
       anime_source: string;
       /** Anime Episodes */
       anime_episodes: string;
-      anilist: components["schemas"]["AnimeLink"];
-      mal: components["schemas"]["AnimeLink"];
-      anidb: components["schemas"]["AnimeLink"];
-      animeplanet: components["schemas"]["AnimeLink"];
-      anisearch: components["schemas"]["AnimeLink"];
-      kitsu: components["schemas"]["AnimeLink"];
-      website: components["schemas"]["AnimeLink"];
+      anilist: components["schemas"]["LiveChartAnimeLink"];
+      mal: components["schemas"]["LiveChartAnimeLink"];
+      anidb: components["schemas"]["LiveChartAnimeLink"];
+      animeplanet: components["schemas"]["LiveChartAnimeLink"];
+      anisearch: components["schemas"]["LiveChartAnimeLink"];
+      kitsu: components["schemas"]["LiveChartAnimeLink"];
+      website: components["schemas"]["LiveChartAnimeLink"];
       /** Posters */
       posters: string[];
     };
-    /** AnimeInfo */
-    AnimeInfo: {
+    /** LiveChartAnimeInfo */
+    LiveChartAnimeInfo: {
       /** Posters */
       posters: string[];
       /** Rating */
       rating: string;
-      titles: components["schemas"]["AnimeTitles"];
+      titles: components["schemas"]["LiveChartAnimeTitles"];
       /** Premiere */
       premiere: string;
       /** Season */
@@ -104,15 +205,15 @@ export interface components {
       /** Kitsu Id */
       kitsu_id?: string | null;
     };
-    /** AnimeLink */
-    AnimeLink: {
+    /** LiveChartAnimeLink */
+    LiveChartAnimeLink: {
       /** Id */
       id: string | null;
       /** Url */
       url: string | null;
     };
-    /** AnimeTitles */
-    AnimeTitles: {
+    /** LiveChartAnimeTitles */
+    LiveChartAnimeTitles: {
       /** Romaji */
       romaji: string;
       /** English */
@@ -120,11 +221,27 @@ export interface components {
       /** Native */
       native: string;
     };
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components["schemas"]["ValidationError"][];
-    };
+    /**
+     * StreamingServers
+     * @enum {string}
+     */
+    StreamingServers:
+      | "asianload"
+      | "gogocdn"
+      | "streamsb"
+      | "mixdrop"
+      | "mp4upload"
+      | "upcloud"
+      | "vidcloud"
+      | "streamtape"
+      | "vizcloud"
+      | "mycloud"
+      | "filemoon"
+      | "vidstreaming"
+      | "smashystream"
+      | "streamhub"
+      | "streamwish"
+      | "vidmoly";
     /** ValidationError */
     ValidationError: {
       /** Location */
@@ -169,7 +286,7 @@ export interface operations {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["AnimeInfo"];
+          "application/json": components["schemas"]["LiveChartAnimeInfo"];
         };
       };
       /** @description Validation Error */
@@ -188,8 +305,78 @@ export interface operations {
         content: {
           "application/json": Record<
             string,
-            components["schemas"]["AnimeData"][]
+            components["schemas"]["LiveChartAnimeData"][]
           >;
+        };
+      };
+    };
+  };
+  /** Search */
+  search_gogoanime_search_get: {
+    parameters: {
+      query: {
+        query: string;
+        page?: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GogoAnimeSearch"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Getanimeinfo */
+  getAnimeInfo_gogoanime_anime__anime_id__get: {
+    parameters: {
+      path: {
+        anime_id: string;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GogoAnimeInfo"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Getanimeepisode */
+  getAnimeEpisode_gogoanime_watch__episode_id__get: {
+    parameters: {
+      query?: {
+        server?: components["schemas"]["StreamingServers"];
+      };
+      path: {
+        episode_id: string;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GogoAnimeGogoCdn"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };

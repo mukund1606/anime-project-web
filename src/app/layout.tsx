@@ -1,9 +1,11 @@
 import "@/styles/globals.css";
 // Next
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 
 // Providers
-import { TRPCProvider } from "@/providers/TRPCProvider";
+import { TRPCReactProvider } from "@/trpc/react";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "My Anime",
@@ -19,7 +21,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head></head>
       <body className="min-h-screen w-full">
-        <TRPCProvider>{children}</TRPCProvider>
+        <Providers>
+          <TRPCReactProvider headers={headers()}>{children}</TRPCReactProvider>
+        </Providers>
       </body>
     </html>
   );

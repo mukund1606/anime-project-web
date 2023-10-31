@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Anime_GET } from "@/server/openapiClient";
 import type { components } from "@/lib/api/anime-api_v1";
 
-type AnimeData = components["schemas"]["AnimeData"];
+type AnimeData = components["schemas"]["LiveChartAnimeData"];
 
 export default function Home() {
   const [animeSchedule, setAnimeSchedule] =

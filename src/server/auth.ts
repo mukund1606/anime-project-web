@@ -1,11 +1,54 @@
-// Env
-import { env } from "@/env.mjs";
+import {
+  getServerSession,
+  type DefaultSession,
+  type NextAuthOptions,
+} from "next-auth";
 
-// Next-Auth
-import { getServerSession, type User, type NextAuthOptions } from "next-auth";
-import { type JWT } from "next-auth/jwt";
+import { type DefaultJWT } from "next-auth/jwt";
+
+import { env } from "@/env.mjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+/**
+ * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
+ * object and keep type safety.
+ *
+ * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
+ */
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: {
+      id: string;
+      // ...other properties
+      // role: UserRole;
+    } & DefaultSession["user"];
+  }
+
+  // interface User {
+  //   // ...other properties
+  //   // role: UserRole;
+  // }
+}
+
+/**
+ * Module augmentation for `next-auth/jtw` types. Allows us to add custom properties to the `jwt`
+ * object and keep type safety.
+ *
+ * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
+ */
+declare module "next-auth/jwt" {
+  interface JWT extends DefaultJWT {
+    id: string;
+    // ...other properties
+    // role: UserRole;
+  }
+}
+
+/**
+ * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
+ *
+ * @see https://next-auth.js.org/configuration/options
+ */
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -28,7 +71,7 @@ export const authOptions: NextAuthOptions = {
           credentials.username === env.ADMIN_USERNAME &&
           credentials.password === env.ADMIN_PASSWORD
         ) {
-          const user: User = {
+          const user = {
             id: "1",
             name: "Admin",
             email: "admin@temp.com",
@@ -48,6 +91,7 @@ export const authOptions: NextAuthOptions = {
     session({ session, token }) {
       if (token) {
         session.user = {
+          id: token.id,
           name: token.name,
           email: token.email,
         };
@@ -56,7 +100,7 @@ export const authOptions: NextAuthOptions = {
     },
     jwt({ token, user }) {
       if (user) {
-        const data: JWT = {
+        const data = {
           id: user.id,
           name: user.name,
           email: user.email,
@@ -74,6 +118,9 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export const getServerAuthSession = () => {
-  return getServerSession(authOptions);
-};
+/**
+ * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
+ *
+ * @see https://next-auth.js.org/configuration/nextjs
+ */
+export const getServerAuthSession = () => getServerSession(authOptions);
